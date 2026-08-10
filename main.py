@@ -2,8 +2,7 @@ import os
 import random
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-
-TOKEN = os.getenv("8816591363:AAH0n9RARDc6cDJwT13VD7wD_BtEC2vmTMk")
+TOKEN = "8816591363:AAH0n9RARDc6cDJwT13VD7wD_BtEC2vmTMk"
 
 RANKS = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10}
 
@@ -156,10 +155,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.edit_text(result_text, parse_mode="Markdown")
 
 def main():
-    if not TOKEN:
-        print("Error: BOT_TOKEN is missing!")
-        return
-
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start_game", start_game))
     app.add_handler(CommandHandler("deal", deal_cards))
@@ -170,4 +165,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+    
