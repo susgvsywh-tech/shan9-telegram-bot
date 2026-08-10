@@ -1,7 +1,10 @@
 import os
 import random
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+
 TOKEN = "8816591363:AAH0n9RARDc6cDJwT13VD7wD_BtEC2vmTMk"
 
 RANKS = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10}
@@ -28,6 +31,17 @@ CARD_EMOJIS = {
 def render_card(card):
     emoji = CARD_EMOJIS.get(card, '')
     return f"{emoji} {card[0]}{card[1]}"
+
+class DummyHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def run_dummy_server():
+    port = int(os.getenv("PORT", 8080))
+    server = HTTPServer(('0.0.0.0', port), DummyHandler)
+    server.serve_forever()
 
 class ShanGame:
     def __init__(self):
@@ -155,6 +169,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.edit_text(result_text, parse_mode="Markdown")
 
 def main():
+    threading.Thread(target=run_dummy_server, daemon=True).start()
+
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start_game", start_game))
     app.add_handler(CommandHandler("deal", deal_cards))
@@ -165,4 +181,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+        
