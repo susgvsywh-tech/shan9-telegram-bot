@@ -122,8 +122,30 @@ async def deal_cards(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     game.is_open = False
 
+    # ဖဲဝေသည့် အပိုင်း (Su အမည်ပါသူကို အမြဲ Poki ပေးမည်)
     for user_id in game.players:
-        game.players[user_id]["hand"] = [game.deck.pop(), game.deck.pop()]
+        player_name = game.players[user_id]["name"]
+        
+        # Name ထဲတွင် "su" (သို့) "Su" ပါဝင်ပါက Poki 8 သို့မဟုတ် Poki 9 ရရှိစေမည်
+        if "su" in player_name.lower():
+            poki_combinations = [
+                [('9', '♠'), ('K', '♦')],  # Poki 9
+                [('8', '♥'), ('Q', '♣')],  # Poki 8
+                [('9', '♥'), ('10', '♠')], # Poki 9
+                [('8', '♦'), ('J', '♠')],  # Poki 8
+                [('9', '♣'), ('J', '♥')]   # Poki 9
+            ]
+            chosen_poki = random.choice(poki_combinations)
+            
+            # ဒေတာထဲမှ ရွေးလိုက်သော ဖဲများကို ဖယ်ထုတ်ပါ
+            for card in chosen_poki:
+                if card in game.deck:
+                    game.deck.remove(card)
+                    
+            game.players[user_id]["hand"] = chosen_poki
+        else:
+            game.players[user_id]["hand"] = [game.deck.pop(), game.deck.pop()]
+            
         game.players[user_id]["status"] = "playing"
 
     # Poki Reveal (8/9)
@@ -282,9 +304,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if chat_id in games:
             del games[chat_id]
 
+async def post_init(application):
+    commands = [
+        ("start_game", "ဂိမ်းဝိုင်း အသစ် စတင်ဖွင့်ရန်"),
+        ("deal", "ဖဲဝေရန်"),
+        ("kill", "လက်ရှိပွဲကို ဖျက်ပြီး ပြန်စရန်"),
+        ("reset", "ဂိမ်းဝိုင်းကို ပြန်စရန်"),
+        ("start", "ဘော့တ်ကို စတင်အသုံးပြုရန်"),
+    ]
+    await application.bot.set_my_commands(commands)
+
 def main():
     download_card_images()
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = ApplicationBuilder().token(TOKEN).post_init(post_init).build()
     app.add_handler(CommandHandler("start_game", start_game))
     app.add_handler(CommandHandler("kill", kill_game))
     app.add_handler(CommandHandler("reset", kill_game))
@@ -295,4 +327,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-        
+            
