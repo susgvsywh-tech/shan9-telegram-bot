@@ -28,9 +28,8 @@ async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     keyboard = [[InlineKeyboardButton("🎴 Play Shan Koe Mee (Random)", web_app=WebAppInfo(url=WEB_APP_URL))]]
     await update.message.reply_text(
-        "🎲 **ကံတရားသာလျှင် အဆုံးအဖြတ်ပေးမည်!**\n\nClick below to draw your fate:", 
-        reply_markup=InlineKeyboardMarkup(keyboard), 
-        parse_mode="Markdown"
+        "🎲 ကံတရားသာလျှင် အဆုံးအဖြတ်ပေးမည်!\n\nClick below to draw your fate:", 
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
 async def web_app_data_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -46,7 +45,7 @@ async def web_app_data_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     if action == "draw":
         hand, score = games[chat_id].draw_hand()
         cards_str = " ".join([f"{c[0]}{c[1]}" for c in hand])
-        await update.message.reply_text(f"👤 {user.first_name} ရဲ့ လက်ထဲမှာ:\n🎴 **{cards_str}**\n\n🎯 **ရမှတ် - {score}**")
+        await update.message.reply_text(f"👤 {user.first_name} ရဲ့ လက်ထဲမှာ:\n🎴 {cards_str}\n\n🎯 ရမှတ် - {score}")
     
     elif action == "stay":
         await update.message.reply_text(f"🏁 {user.first_name} ဂိမ်းရပ်နားလိုက်ပါပြီ။")
