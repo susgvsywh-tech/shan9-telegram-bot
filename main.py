@@ -1,6 +1,6 @@
 import random
 import json
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, WebAppInfo
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 TOKEN = "8816591363:AAHPedksva3mPRlN13oKXvGY5SsQRCzh6-E"
@@ -26,18 +26,19 @@ async def start_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     games[chat_id] = ShanGame()
     
+    # Bottom Keyboard ပြောင်းလဲထားပါသည်
     keyboard = [
         [
-            InlineKeyboardButton(
+            KeyboardButton(
                 text="🎴 Play Shan Koe Mee", 
                 web_app=WebAppInfo(url=WEB_APP_URL)
             )
         ]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     
     await update.message.reply_text(
-        text="🎲 Fate will decide!\n\nClick below to draw your fate:", 
+        text="🎲 Fate will decide!\n\nClick button below to open WebApp:", 
         reply_markup=reply_markup
     )
 
