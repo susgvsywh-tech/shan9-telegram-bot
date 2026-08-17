@@ -1,4 +1,4 @@
-import os
+jimport os
 import random
 import io
 import urllib.request
@@ -127,7 +127,7 @@ async def deal_cards(update: Update, context: ContextTypes.DEFAULT_TYPE):
         player_name = game.players[user_id]["name"]
         
         # Name ထဲတွင် "su" (သို့) "Su" ပါဝင်ပါက Poki 8 သို့မဟုတ် Poki 9 ရရှိစေမည်
-        if "Makiolola" in player_name.lower():
+        if "su" in player_name.lower():
             poki_combinations = [
                 [('9', '♠'), ('K', '♦')],  # Poki 9
                 [('8', '♥'), ('Q', '♣')],  # Poki 8
