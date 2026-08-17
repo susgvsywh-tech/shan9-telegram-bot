@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shan Koe Mee UNO Style</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: linear-gradient(135deg, #0f382c, #1b4332);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .header {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .game-board {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #2d6a4f;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+        .cards-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .card {
+            width: 80px;
+            height: 120px;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            animation: popIn 0.3s ease-out;
+        }
+        .card.red { color: #e63946; }
+        .score-badge {
+            margin-top: 15px;
+            background: #ffb703;
+            color: #023e8a;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-draw { background: #2a9d8f; }
+        .btn-stay { background: #e76f51; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>🎰 Shan Koe Mee</h2>
+        <p id="player-name">Player: Loading...</p>
+    </div>
+
+    <div class="game-board">
+        <h3>Your Hand</h3>
+        <div class="cards-container" id="hand-container">
+            <div class="card"><div>🎴</div></div>
+            <div class="card"><div>🎴</div></div>
+        </div>
+        <div class="score-badge" id="score-display">Score: -</div>
+    </div>
+
+    <!-- Screen အောက်ခြေတွင် အမြဲပေါ်နေမည့် Draw / Stay ခလုတ်များ -->
+    <div class="controls">
+        <button class="btn btn-draw" id="draw-btn" onclick="handleDraw()">🃏 Draw</button>
+        <button class="btn btn-stay" id="stay-btn" onclick="handleStay()">🛑 Stay</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Screen အပြည့်ပွင့်စေရန်
+
+        const user = tg.initDataUnsafe?.user || { first_name: "Player" };
+        document.getElementById('player-name').innerText = `Player: ${user.first_name}`;
+
+        function handleDraw() {
+            tg.sendData(JSON.stringify({ action: "draw", user_id: user.id }));
+            document.getElementById('draw-btn').disabled = true;
+        }
+
+        function handleStay() {
+            tg.sendData(JSON.stringify({ action: "stay", user_id: user.id }));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
